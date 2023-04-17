@@ -19,7 +19,7 @@ python manage.py migrate
 ## Cargar datos en la base de datos
 
 ``` bash
-python manage.py import_db.py
+python import_db.py
 ```
 
 ## Crear usuario admin para el panel de administrador
