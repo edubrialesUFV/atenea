@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Lista de Productos</title>
+</head>
+<body>
+    <h1>Lista de Productos</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Producto</th>
+                <th>Características</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for producto, caracteristica in zip(productos, caracteristicas) %}
+                <tr>
+                    <td>{{ producto }}</td>
+                    <td>{{ caracteristica }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
