@@ -11,5 +11,9 @@ my_admin_site = MyAdminSite()
 # class AuthorAdmin(admin.ModelAdmin):
 
 my_admin_site.register(Producto)
+my_admin_site.register(Cliente)
+my_admin_site.register(Pedido)
+my_admin_site.register(Proveedor)
+
 
 
