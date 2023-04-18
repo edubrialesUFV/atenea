@@ -16,6 +16,8 @@ def cargar_datos(archivo_xlsx):
     # Asumiendo que la primera fila tiene encabezados y los datos comienzan en la segunda fila
     for fila in hoja.iter_rows(min_row=2, values_only=True):
         prov, ref, cant_min = fila
+        ref = ref.lower()
+        ref = ref.replace(" ", "_")
         producto_proveedor, created = Proveedor.objects.get_or_create(nombre_proveedor= prov)
         nuevo_objeto_product = Producto(referencia=ref, proveedor = producto_proveedor, cantidad_minima_reaprovisionamiento=cant_min)
         try:

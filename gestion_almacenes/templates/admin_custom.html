@@ -1,13 +1,23 @@
-<!-- miapp/templates/miapp/admin.py -->
+<!-- miapp/templates/miapp/admin_dashboard.html -->
 {% extends "admin/base.html" %}
 
-{% block sidebar %}
+{% block extrastyle %}
 {{ block.super }}
-<div id="content-related">
+<!-- Agrega aquí estilos adicionales si es necesario -->
+{% endblock %}
+
+{% block content %}
+<div id="content-main">
+    <h1>Bienvenido al panel de administración</h1>
+    <h2>Tablas</h2>
     <ul>
-        <li>
-            <a href="{% url '/admin/registrar_producto' %}">Mi vista personalizada</a>
+        <!-- Agrega un enlace a cada tabla/modelo aquí -->
+        <li><a href="{% url 'admin:gestion_almacenes_producto_changelist' %}">Agregar Producto</a>
         </li>
+    </ul>
+    <h2>Enlaces personalizados</h2>
+    <ul>
+        <li><a href="{% url 'registrar_producto' %}">Registrar producto</a></li>
     </ul>
 </div>
 {% endblock %}
