@@ -1,0 +1,13 @@
+<!-- miapp/templates/miapp/admin.py -->
+{% extends "admin/base.html" %}
+
+{% block sidebar %}
+{{ block.super }}
+<div id="content-related">
+    <ul>
+        <li>
+            <a href="{% url '/admin/registrar_producto' %}">Mi vista personalizada</a>
+        </li>
+    </ul>
+</div>
+{% endblock %}
