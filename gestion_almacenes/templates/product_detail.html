@@ -17,13 +17,15 @@
         <li><strong>Cantidad en stock:</strong> {{ producto.cantidad_stock }}</li>
         <li><strong>Peso por unidad:</strong> {{ producto.peso_por_unidad }} kg</li>
       </ul>
-      <form>
+      <form method="POST" action="{% url 'checkout' %}">
+        {% csrf_token %}
         <div class="form-group pb-4">
           <label for="cantidad" class="form-label">Cantidad:</label>
           <input type="number" id="cantidad" name="cantidad" min="1" max="{{ producto.cantidad_stock }}" class="form-control-sm" required>
           <div class="form-text text-muted">Cantidad máxima disponible: {{ producto.cantidad_stock }}</div>
         </div>
-        <a href="#" class="btn btn-success">Agregar al carrito</a>
+        <button type="submit" class="btn btn-success">Añadir al carrito</button>
+        <input type="hidden" name="referencia" value="{{ producto.referencia }}">
       </form>
     </div>
   </div>

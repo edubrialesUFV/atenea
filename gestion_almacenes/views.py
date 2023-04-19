@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from django.contrib.admin.views.decorators import staff_member_required
 from gestion_almacenes import models
 from django.shortcuts import render, redirect
+from django.contrib import messages
 from .models import Producto
 from .models import Proveedor
 # Create your views here.
@@ -74,5 +75,22 @@ def producto_detail(request, id):
     return render(request, "product_detail.html", {'producto': producto, 'nombre_referencia': nombre_referencia}) 
 
 
+def checkout(request, referencia):
+    producto = get_object_or_404(Producto, referencia=referencia)
 
+    if request.method == 'POST':
+        cantidad = int(request.POST.get('cantidad', 1))
+        if cantidad > producto.cantidad_stock:
+            messages.error(request, f'Sólo hay {producto.cantidad_stock} unidades disponibles')
+        else:
+            carrito = request.session.get('carrito', {})
+            if referencia in carrito:
+                carrito[referencia] += cantidad
+            else:
+                carrito[referencia] = cantidad
+            request.session['carrito'] = carrito
+            messages.success(request, f'{cantidad} unidades de {producto.nombre} han sido añadidas al carrito')
+        #return redirect('checkout')
+    else:
+        return render(request, 'checkout.html', {'producto': producto})
 
