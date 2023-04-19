@@ -1,5 +1,32 @@
 {% extends "base.html" %}
 {% block title %}Home{% endblock %}
 {% block content %}
-<h1>Home page</h1>
+
+
+
+<div class="container main-grid">
+    <div class="row">
+        <div class="col-sm-12">
+            <form method="post" class="filtro-proveedor">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-primary">Filtrar</button>
+            </form>
+        </div>
+    </div>
+    <div class="row">
+        {% for producto in productos %}
+        <div class="col-sm-4 main-row">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">{{ producto.referencia }}</h5>
+                    <p class="card-text">Proveedor: {{ producto.proveedor }}</p>
+                    <p class="card-text">Unidades disponibles: {{ producto.cantidad_stock }}</p>
+                    <p class="card-text">Peso por unidad: {{ producto.peso_por_unidad }} kg</p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
 {% endblock %}
