@@ -3,26 +3,27 @@ from django.contrib.admin.views.decorators import staff_member_required
 from gestion_almacenes import models
 from django.shortcuts import render
 from .models import Producto
+from .models import Proveedor
 # Create your views here.
 
 from .forms import FiltroProveedorForm
 from django.db.models import Q
 
 from .forms import FiltroProveedorForm
-from django.db.models import Q
 
 def index(request):
-    proveedores = Producto.objects.values_list('proveedor', flat=True).distinct()
+    # Obtener los proveedores directamente de los objetos Producto
+    proveedores = Proveedor.objects.values_list('nombre_proveedor', flat=True).distinct()
 
-    form = FiltroProveedorForm(list(proveedores))
+    form = FiltroProveedorForm(proveedores)
     productos = Producto.objects.all()
 
     if request.method == 'POST':
-        form = FiltroProveedorForm(list(proveedores), request.POST)
+        form = FiltroProveedorForm(proveedores, request.POST)
         if form.is_valid():
             proveedor_seleccionado = form.cleaned_data['proveedor']
             if proveedor_seleccionado:
-                productos = productos.filter(proveedor=proveedor_seleccionado)
+                productos = productos.filter(proveedor__nombre_proveedor=proveedor_seleccionado)
 
     productos_modificados = []
 
