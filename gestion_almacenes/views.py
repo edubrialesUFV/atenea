@@ -72,25 +72,18 @@ def registrar_producto(request):
 def producto_detail(request, id):
     producto = get_object_or_404(models.Producto, referencia=id)
     nombre_referencia = producto.referencia.split('_')[0].capitalize()
-    return render(request, "product_detail.html", {'producto': producto, 'nombre_referencia': nombre_referencia}) 
+    return render(request, "product_detail.html", {'producto': producto, 'nombre': nombre_referencia})
 
-
-def checkout(request, referencia):
-    producto = get_object_or_404(Producto, referencia=referencia)
-
+def anadirAcesta(request, id):
+    producto = get_object_or_404(models.Producto, referencia=id)
+    nombre_referencia = producto.referencia.split('_')[0].capitalize()
     if request.method == 'POST':
-        cantidad = int(request.POST.get('cantidad', 1))
+        cantidad = int(request.POST.get('cantidad', 0)) #Si le da al boton pero no introduce nada mete 0 en cantidad
         if cantidad > producto.cantidad_stock:
             messages.error(request, f'Sólo hay {producto.cantidad_stock} unidades disponibles')
         else:
-            carrito = request.session.get('carrito', {})
-            if referencia in carrito:
-                carrito[referencia] += cantidad
-            else:
-                carrito[referencia] = cantidad
-            request.session['carrito'] = carrito
-            messages.success(request, f'{cantidad} unidades de {producto.nombre} han sido añadidas al carrito')
-        #return redirect('checkout')
+            messages.success(request, f'{cantidad} unidades de {nombre_referencia} han sido añadidas al carrito')
+            return render(request, 'checkout.html', {'producto': producto, 'nombre': nombre_referencia, 'cantidad': cantidad})
     else:
-        return render(request, 'checkout.html', {'producto': producto})
-
+        messages.error(request, f'Sólo hay {producto.cantidad_stock} unidades disponibles')
+        return render(request, "product_detail.html", {'producto': producto, 'nombre': nombre_referencia})

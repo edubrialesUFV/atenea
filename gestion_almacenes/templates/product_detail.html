@@ -9,7 +9,7 @@
       <!--<img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}" class="img-fluid">-->
     </div>
     <div class="col-md-6">
-      <h2>{{ nombre_referencia }}</h2>
+      <h2>{{ nombre }}</h2>
       <h4>Precio: {{ producto.precio }}€</h4>
       <ul>
         <!--<li><strong>Referencia:</strong> {{ producto.referencia }}</li>-->
@@ -17,11 +17,11 @@
         <li><strong>Cantidad en stock:</strong> {{ producto.cantidad_stock }}</li>
         <li><strong>Peso por unidad:</strong> {{ producto.peso_por_unidad }} kg</li>
       </ul>
-      <form method="POST" action="{% url 'checkout' %}">
+      <form method="POST" action="{% url 'cesta' producto.referencia %}">
         {% csrf_token %}
         <div class="form-group pb-4">
           <label for="cantidad" class="form-label">Cantidad:</label>
-          <input type="number" id="cantidad" name="cantidad" min="1" max="{{ producto.cantidad_stock }}" class="form-control-sm" required>
+          <input type="number" name="cantidad" min="1" max="{{ producto.cantidad_stock }}" class="form-control-sm" required>
           <div class="form-text text-muted">Cantidad máxima disponible: {{ producto.cantidad_stock }}</div>
         </div>
         <button type="submit" class="btn btn-success">Añadir al carrito</button>
