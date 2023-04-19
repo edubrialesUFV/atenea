@@ -1,10 +1,29 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <h2>Iniciar sesión</h2>
-  <form method="post">
+
+{% load myfilters %}
+  <main class="container form-signin w-100 m-auto">
+    <form method="post">
     {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Ingresar</button>
-  </form>
+    {{ form.non_field_errors }}
+      <h1 class="h3 mb-3 fw-normal">Iniciar sesion</h1>
+  
+      <div class="form-floating">
+        {{form.username|addclass:'form-control'}}
+        {{form.username.label_tag}}
+        {{ form.username.errors }}
+      </div>
+      <div class="form-floating">
+        {{form.password|addclass:'form-control'}}
+        {{form.password.label_tag}}
+        {{ form.password.errors }}
+        <span class="helptext">{{ form.password.help_text }}</span>
+      </div>
+      <button class="w-100 btn btn-lg btn-primary" type="submit">Iniciar sesion</button>
+    </form>
+    <p><a href="{% url 'register' %}">Registrate aqui</a></p>
+  </main>
 {% endblock %}
+
+

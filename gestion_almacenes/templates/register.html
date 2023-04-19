@@ -1,10 +1,44 @@
 {% extends 'base.html' %}
 
 {% block content %}
+
+{% load myfilters %}
+
   <h2>Registro</h2>
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Registrarse</button>
+  <form method='POST' id="inis"  class=" mb-3 needs-validation ini">{% csrf_token %}
+    {{ form.non_field_errors }}
+    <div class="form-floating mb-3">
+      {{form.nombre_cliente|addclass:'form-control'}}
+      {{form.nombre_cliente.label_tag}}
+      {{ form.nombre_cliente.errors }}
+    </div>
+    <div class="form-floating mb-3">
+      {{form.email|addclass:'form-control'}}
+      {{form.email.label_tag}}
+      {{ form.email.errors }}
+    </div>
+    <div class="form-floating mb-3">
+        {{form.direccion_cliente|addclass:'form-control'}}
+        {{form.direccion_cliente.label_tag}}
+        {{ form.direccion_cliente.errors }}
+      </div>
+      <div class="form-floating mb-3">
+        {{form.codigo_postal|addclass:'form-control'}}
+        {{form.codigo_postal.label_tag}}
+        {{ form.codigo_postal.errors }}
+      </div>
+    <div class="form-floating mb-3">
+      {{form.password1|addclass:'form-control'}}
+      {{form.password1.label_tag}}
+      {{ form.password1.errors }}
+    </div>
+    <div class="form-floating mb-3">
+      {{form.password2|addclass:'form-control'}}
+      {{form.password2.label_tag}}
+      {{ form.password2.errors }}
+    </div>
+    <div class="form-floating mb-3 env">
+      <button class="btn btn-primary" type="submit">Registrarse</button>
+    </div>
   </form>
 {% endblock %}
