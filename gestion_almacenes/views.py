@@ -29,7 +29,8 @@ def index(request):
     for producto in productos:
         referencia_modificada = producto.referencia.split('_')[0].capitalize()
         producto_dict = {
-            'referencia': referencia_modificada,
+            'referencia': producto.referencia,
+            'referencia_mod': referencia_modificada,
             'proveedor': producto.proveedor,
             'cantidad_stock': producto.cantidad_stock,
             'peso_por_unidad': producto.peso_por_unidad,
@@ -37,11 +38,6 @@ def index(request):
         productos_modificados.append(producto_dict)
 
     return render(request, 'index.html', {'productos': productos_modificados, 'form': form})
-
-
-
-
-
 
 
 @staff_member_required
