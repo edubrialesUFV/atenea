@@ -4,7 +4,7 @@
 *.pyc
 __pycache__
 db.sqlite3
-
+./gestion_almacenes/__pycache__
 
 # Backup files # 
 *.bak 

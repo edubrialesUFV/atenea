@@ -1,5 +1,39 @@
 from django.db import models
 
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from django.db import models
+
+
+class ClienteManager(BaseUserManager):
+    def create_user(self, nombre_cliente, email, password=None, **extra_fields):
+        if not email:
+            raise ValueError('El campo email es obligatorio.')
+        email = self.normalize_email(email)
+        user = self.model(nombre_cliente=nombre_cliente, email=email, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, nombre_cliente, email, password=None, **extra_fields):
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+        return self.create_user(nombre_cliente, email, password, **extra_fields)
+    
+class Cliente(AbstractBaseUser, PermissionsMixin):
+    nombre_cliente = models.CharField(max_length=100)
+    email = models.EmailField(unique=True)
+    direccion_cliente = models.CharField(max_length=150)
+    codigo_postal = models.CharField(max_length=10)
+    is_active = models.BooleanField(default=True)
+    is_staff = models.BooleanField(default=False)
+
+    objects = ClienteManager()
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['nombre_cliente']
+
+    def __str__(self):
+        return self.nombre_cliente
 
 class Proveedor(models.Model):
     nombre_proveedor = models.CharField(max_length=100)
@@ -20,13 +54,9 @@ class Producto(models.Model):
         return self.referencia
 
 
-class Cliente(models.Model):
-    nombre_cliente = models.CharField(max_length=100)
-    direccion_cliente = models.CharField(max_length=150)
-    codigo_postal = models.CharField(max_length=10)
 
-    def __str__(self):
-        return self.nombre_cliente
+
+
 
 
 class Pedido(models.Model):

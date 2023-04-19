@@ -1,5 +1,5 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary position">
-    <a class="navbar-brand" href="{% url 'home' %}">Portal de ventas</a>
+    <a class="navbar-brand" href="{% url 'home' %}">Portal de ventas {% if user.is_authenticated %}Hi {{request.user}}{% endif %}</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -14,10 +14,10 @@
             </a>
           <ul class="dropdown-menu">
             {% if user.is_authenticated %}
-            <li><a class="dropdown-item" href="#">Cerrar Sesión</a></li>
+            <li><a class="dropdown-item" href="{% url 'logout' %}">Cerrar Sesión</a></li>
             {% else %}
-            <li><a class="dropdown-item" href="#">Iniciar Sesión</a></li>
-            <li><a class="dropdown-item" href="#">Registrarse</a></li>
+            <li><a class="dropdown-item" href="{% url 'login' %}">Iniciar Sesión</a></li>
+            <li><a class="dropdown-item" href="{% url 'register' %}">Registrarse</a></li>
             {% endif %}
           </ul>       
         </li>

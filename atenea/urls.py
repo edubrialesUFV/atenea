@@ -22,5 +22,8 @@ urlpatterns = [
     path('admin/', admin.my_admin_site.urls),
     path('', views.index, name="home"),
     path("producto/", include("gestion_almacenes.urls")),
+    path('register/', views.register, name="register"),
+    path('login/', views.ClienteLoginView.as_view(), name="login"),
+    path('logout/', views.logout_view, name="logout"),
 
 ]

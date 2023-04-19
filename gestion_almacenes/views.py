@@ -1,15 +1,37 @@
 from django.shortcuts import render, get_object_or_404
 from django.contrib.admin.views.decorators import staff_member_required
 from gestion_almacenes import models
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .models import Producto
 from .models import Proveedor
 # Create your views here.
+from .forms import FiltroProveedorForm, ClienteCreationForm
+from django.contrib.auth.views import LoginView
+from django.contrib.auth import login, logout
+from .forms import FiltroProveedorForm
+from django.urls import reverse
 
 from .forms import FiltroProveedorForm
-from django.db.models import Q
+class ClienteLoginView(LoginView):
+    template_name = 'login.html'
+    def get_success_url(self):
+        return reverse('home')
 
-from .forms import FiltroProveedorForm
+
+def register(request):
+    if request.method == 'POST':
+        form = ClienteCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('home')
+    else:
+        form = ClienteCreationForm()
+    return render(request, 'register.html', {'form': form})
+
+def logout_view(request):
+    logout(request)
+    return redirect('home')
 
 def index(request):
     # Obtener los proveedores directamente de los objetos Producto
