@@ -90,7 +90,7 @@ class Posicion(models.Model):
     ]
     tipo_posicion = models.CharField(max_length=3, choices=TIPO_POSICION_CHOICES)
     capacidad = models.PositiveIntegerField()
-    unidades_ocupadas = models.PositiveIntegerField()
+    unidades_ocupadas = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return f"{self.tipo_posicion} - {self.id}"

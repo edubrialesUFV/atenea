@@ -7,7 +7,7 @@ from django.core.exceptions import ValidationError
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "atenea.settings")
 django.setup()
 
-from gestion_almacenes.models import Proveedor, Producto
+from gestion_almacenes.models import Proveedor, Producto, Posicion
 
 def cargar_datos(archivo_xlsx):
     wb = openpyxl.load_workbook(archivo_xlsx)
@@ -19,7 +19,7 @@ def cargar_datos(archivo_xlsx):
         ref = ref.lower()
         ref = ref.replace(" ", "_")
         producto_proveedor, created = Proveedor.objects.get_or_create(nombre_proveedor= prov)
-        nuevo_objeto_product = Producto(referencia=ref, proveedor = producto_proveedor, cantidad_minima_reaprovisionamiento=cant_min)
+        nuevo_objeto_product = Producto(referencia=ref, proveedor = producto_proveedor, cantidad_minima_reaprovisionamiento=cant_min, cantidad_stock=20)
         try:
             nuevo_objeto_product.full_clean()
             nuevo_objeto_product.save()
@@ -27,9 +27,11 @@ def cargar_datos(archivo_xlsx):
         except ValidationError as e:
             print(f"Error al crear objeto: {e}")
             
-            
-       
-
+    for _ in range(50):
+        posicionesPicking = Posicion(tipo_posicion="PIC", capacidad=20 )     
+        posicionesStock = Posicion(tipo_posicion="STO", capacidad=20 )
+        posicionesPicking.save()
+        posicionesStock.save()
 if __name__ == "__main__":
     archivo_xlsx = "Proov_Ref_2023-1.xlsx"
     cargar_datos(archivo_xlsx)
