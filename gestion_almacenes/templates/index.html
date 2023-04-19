@@ -2,4 +2,20 @@
 {% block title %}Home{% endblock %}
 {% block content %}
 <h1>Home page</h1>
+<div class="container">
+    <div class="row">
+        {% for producto in productos %}
+        <div class="col-sm-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">{{ producto.referencia }}</h5>
+                    <p class="card-text">Proveedor: {{ producto.proveedor }}</p>
+                    <p class="card-text">Stock: {{ producto.cantidad_stock }}</p>
+                    <p class="card-text">Peso por unidad: {{ producto.peso_por_unidad }} kg</p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
 {% endblock %}

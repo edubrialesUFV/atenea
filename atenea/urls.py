@@ -21,5 +21,6 @@ urlpatterns = [
     path('admin/registrar_producto/', views.registrar_producto, name="registrar_producto"),
     path('admin/', admin.my_admin_site.urls),
     path('', views.index, name="home"),
-    path("producto/", include("gestion_almacenes.urls"))
+    path("producto/", include("gestion_almacenes.urls")),
+
 ]
