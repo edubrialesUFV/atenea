@@ -1,0 +1,208 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container">
+  <h1 class="text-center mb-4">Checkout</h1>
+<table class="table table-striped table-bordered">
+  <thead>
+    <tr>
+      <th>Referencia</th>
+      <th>Producto</th>
+      <th>Precio unitario</th>
+      <th>Cantidad</th>
+      <th>Subtotal</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for producto in productos %}
+    <tr>
+      <td>{{ producto.id }}</td>
+      <td>{{ producto.nombre }}</td>
+      <td>{{ producto.precio }}</td>
+      <td>{{ producto.cantidad }}</td>
+      <td>{{ producto.subtotal }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+  <tfoot>
+    <tr>
+      <td colspan="4"  style="text-align: right;">Total:</td>
+      <td>{{ total }}</td>
+    </tr>
+  </tfoot>
+</table>
+  
+  <form method="post" action="{% url 'procesar_compra' %}">
+    {% csrf_token %}
+    <div class="row mb-3">
+      <div class="col-sm-4">
+        <div class="btn-group" role="group">
+          <input type="hidden" name="tipo_envio" id="tipo_envio">
+          <button type="button" class="btn btn-outline-secondary dropdown-toggle form-select" data-bs-toggle="dropdown" aria-expanded="false">
+            Seleccione un tipo de envío
+          </button>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#" data-value="EST">Estándar</a></li>
+            <li><a class="dropdown-item" href="#" data-value="URG">Urgente</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-sm-4">
+        <div class="btn-group" role="group">
+          <input type="hidden" name="agencia_transporte" id="agencia_transporte">
+          <button type="button" class="btn btn-outline-secondary dropdown-toggle form-select" data-bs-toggle="dropdown" aria-expanded="false">
+            Seleccione una agencia de transporte
+          </button>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#" data-value="COR">Correos</a></li>
+            <li><a class="dropdown-item" href="#" data-value="SEU">Seur</a></li>
+            <li><a class="dropdown-item" href="#" data-value="DHL">DHL</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    
+    <div class="text-center">
+      <button class="btn btn-primary" type="submit">Comprar</button>
+    </div>
+  </form>
+</div>
+<script>
+  $(document).ready(function() {
+    $('.dropdown-menu a').click(function(e) {
+      e.preventDefault();
+      var value = $(this).data('value');
+      $(this).closest('.btn-group').find('input[type="hidden"]').val(value);
+      $(this).closest('.btn-group').find('.dropdown-toggle').text($(this).text());
+    });
+  });
+</script>
+<script>
+  // Obtener todos los botones dropdown
+  const dropdowns = document.querySelectorAll('.btn-group.form-select');
+
+  // Para cada botón dropdown
+  dropdowns.forEach((dropdown) => {
+    // Obtener el input hidden y el botón que despliega el menú
+    const input = dropdown.querySelector('input[type="hidden"]');
+    const button = dropdown.querySelector('.dropdown-toggle');
+
+    // Para cada elemento de la lista del menú
+    dropdown.querySelectorAll('.dropdown-item').forEach((item) => {
+      // Al hacer clic en el elemento de la lista
+      item.addEventListener('click', () => {
+        // Obtener el valor del atributo data-value
+        const value = item.getAttribute('data-value');
+
+        // Asignar el valor al input hidden
+        input.value = value;
+
+        // Cambiar el texto del botón al valor seleccionado
+        button.textContent = item.textContent;
+      });
+    });
+  });
+</script>
+  <style>
+    /* Estilos para los nuevos campos */
+.btn-group.form-select {
+  position: relative;
+}
+
+.btn-group.form-select input[type="hidden"] {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  z-index: -1;
+}
+
+.btn-group.form-select .dropdown-toggle::after {
+  display: none;
+}
+
+.btn-group.form-select .dropdown-toggle:focus {
+  box-shadow: none;
+  border-color: #ced4da;
+}
+
+.btn-group.form-select .dropdown-menu {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.btn-group.form-select .dropdown-item {
+  display: block;
+  width: 100%;
+  padding: 0.5rem 1rem;
+  color: #212529;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.btn-group.form-select .dropdown-item:hover,
+.btn-group.form-select .dropdown-item:focus {
+  color: #212529;
+  background-color: #f8f9fa;
+}
+
+    .container {
+      max-width: 800px;
+      margin: auto;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 2rem;
+    }
+    
+    th, td {
+      padding: 0.75rem;
+      vertical-align: middle;
+      text-align: center;
+    }
+    
+    thead {
+      background-color: #f8f9fa;
+      font-weight: bold;
+    }
+    
+    tbody tr:nth-of-type(even) {
+      background-color: #f8f9fa;
+    }
+    
+    tfoot tr:nth-of-type(1) {
+      background-color: #e9ecef;
+      font-weight: bold;
+    }
+    
+    tfoot tr:nth-of-type(2) {
+      background-color: #e9ecef;
+      font-weight: bold;
+    }
+    
+    tfoot tr:nth-of-type(3) {
+      background-color: #e9ecef;
+      font-weight: bold;
+    }
+    
+    button {
+      margin-top: 1rem;
+    }
+    
+    /* Estilos para los nuevos campos */
+    tfoot td[colspan="4"] {
+      text-align: right;
+    }
+    
+    tfoot td[colspan="1"] {
+      text-align: left;
+    }   
+  </style>
+{% endblock %}

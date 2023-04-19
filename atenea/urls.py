@@ -16,6 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from gestion_almacenes import views, admin
+from gestion_almacenes.views import checkout, procesar_compra
 
 urlpatterns = [
     path('admin/registrar_producto/', views.registrar_producto, name="registrar_producto"),
@@ -25,5 +26,7 @@ urlpatterns = [
     path('register/', views.register, name="register"),
     path('login/', views.ClienteLoginView.as_view(), name="login"),
     path('logout/', views.logout_view, name="logout"),
+    path('checkout/', checkout),
+    path('checkout/procesar_compra/', procesar_compra, name='procesar_compra'),
 
 ]

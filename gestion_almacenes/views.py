@@ -11,6 +11,10 @@ from django.contrib.auth.views import LoginView
 from django.contrib.auth import login, logout
 from .forms import FiltroProveedorForm
 from django.urls import reverse
+from .models import Producto, Pedido, Cliente
+from django.utils import timezone
+
+
 
 from .forms import FiltroProveedorForm
 class ClienteLoginView(LoginView):
@@ -89,14 +93,92 @@ def producto_detail(request, id):
 
 def anadirAcesta(request, id):
     producto = get_object_or_404(models.Producto, referencia=id)
+    referencia = producto.referencia
     nombre_referencia = producto.referencia.split('_')[0].capitalize()
     if request.method == 'POST':
-        cantidad = int(request.POST.get('cantidad', 0)) #Si le da al boton pero no introduce nada mete 0 en cantidad
+        cantidad = int(request.POST.get('cantidad', 0))
         if cantidad > producto.cantidad_stock:
             messages.error(request, f'Sólo hay {producto.cantidad_stock} unidades disponibles')
         else:
+            # Add product to session cart
+            print("AAAAAAAAAAAAAAAA")
+            carrito = request.session.get('carrito', {})
+            carrito[producto.id] = {'referencia': referencia, 'cantidad': cantidad}
+            request.session['carrito'] = carrito
             messages.success(request, f'{cantidad} unidades de {nombre_referencia} han sido añadidas al carrito')
-            return render(request, 'checkout.html', {'producto': producto, 'nombre': nombre_referencia, 'cantidad': cantidad})
+            return redirect('/checkout/')
     else:
         messages.error(request, f'Sólo hay {producto.cantidad_stock} unidades disponibles')
         return render(request, "product_detail.html", {'producto': producto, 'nombre': nombre_referencia})
+
+
+def checkout(request):
+    # Obtener los productos en el carrito del usuario (almacenados en una variable de sesión)
+    carrito = request.session.get('carrito', {})
+    productos = []
+    total = 0
+    for id, item in carrito.items():
+        producto = get_object_or_404(models.Producto, id=id)
+        precio = producto.id
+        subtotal = precio * item['cantidad']
+        total += subtotal
+        productos.append({
+            'id': producto.id,
+            'nombre': producto.referencia,
+            'producto': producto,
+            'cantidad': item['cantidad'],
+            'precio': precio,
+            'subtotal': subtotal,
+        })
+
+    # Mostrar los productos y el total en la página de checkout de venta
+    context = {
+        'productos': productos,
+        'total': total,
+    }
+    return render(request, 'checkout.html', context)
+
+
+from django.contrib.auth.decorators import login_required
+
+@login_required
+def procesar_compra(request):
+    if request.method == 'POST':
+        carrito = request.session.get('carrito', {})
+        productos = []
+        total = 0
+        for id, item in carrito.items():
+            try:
+                producto = Producto.objects.get(id=id)
+                if producto.cantidad_stock < item['cantidad']:
+                    messages.error(request, f"No hay suficientes unidades en stock para el producto '{producto.referencia}'.")
+                    return redirect('/checkout/')
+                productos.append({
+                    'producto': producto,
+                    'cantidad': item['cantidad'],
+                })
+                producto.cantidad_stock -= item['cantidad']
+                producto.save()
+            except Producto.DoesNotExist:
+                raise ValueError(f"No se encontró el producto con ID '{id}'.")
+        
+        tipo_envio = request.POST.get('tipo_envio')
+        agencia_transporte = request.POST.get('agencia_transporte')
+        
+        cliente = Cliente.objects.get(id=request.user.id)
+
+        # Crear un nuevo pedido en la base de datos
+        pedido = Pedido.objects.create(
+            cliente=cliente,
+            fecha_hora_pedido=timezone.now(),
+            tipo_envio=tipo_envio,
+            agencia_transporte=agencia_transporte,
+        )
+        
+        # Vaciar el carrito
+        # request.session['carrito'] = {}
+        
+        messages.success(request, 'La compra se ha procesado correctamente.')
+        return redirect('/')
+    else:
+        return redirect('/checkout')

@@ -1,0 +1,44 @@
+{% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+            {% if message.tags == 'error' %}
+                <li class="error">{{ message }}</li>
+            {% elif message.tags == 'warning' %}
+                <li class="warning">{{ message }}</li>
+            {% elif message.tags == 'success' %}
+                <li class="success">{{ message }}</li>
+            {% else %}
+                <li class="info">{{ message }}</li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+{% endif %}
+
+<style>
+    .messages {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        text-align: center;
+    }
+    
+    .error {
+        background-color: #FFBABA;
+        color: #D8000C;
+    }
+    
+    .warning {
+        background-color: #FEEFB3;
+        color: #9F6000;
+    }
+    
+    .success {
+        background-color: #DFF2BF;
+        color: #4F8A10;
+    }
+    
+    .info {
+        background-color: #BCE8F1;
+        color: #00529B;
+    }
+</style>
