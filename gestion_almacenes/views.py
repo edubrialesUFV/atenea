@@ -66,6 +66,9 @@ def index(request):
 
 @staff_member_required
 def registrar_producto(request):
+    if request.method == 'POST':
+        codigo = request.POST.get('codigo')
+        print(codigo)
     return render(request, "registrar_producto.html")
 
 

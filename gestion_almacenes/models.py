@@ -46,16 +46,12 @@ class Producto(models.Model):
     referencia = models.CharField(max_length=20)
     # nombre_producto = models.CharField(max_length=100)
     proveedor = models.ForeignKey(Proveedor, on_delete=models.CASCADE)
-    cantidad_stock = models.PositiveIntegerField(null=True, blank=True)
+    cantidad_stock = models.PositiveIntegerField(default=0)
     cantidad_minima_reaprovisionamiento = models.PositiveIntegerField()
-    peso_por_unidad = models.FloatField(null=True, blank=True)
+    peso_por_unidad = models.FloatField(default=200)
 
     def __str__(self):
         return self.referencia
-
-
-
-
 
 
 
