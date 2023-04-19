@@ -51,7 +51,8 @@ def registrar_producto(request):
 
 def producto_detail(request, id):
     producto = get_object_or_404(models.Producto, referencia=id)
-    return render(request, "product_detail.html", {'producto': producto}) 
+    nombre_referencia = producto.referencia.split('_')[0].capitalize()
+    return render(request, "product_detail.html", {'producto': producto, 'nombre_referencia': nombre_referencia}) 
 
 
 
