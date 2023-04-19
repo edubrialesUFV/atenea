@@ -52,6 +52,16 @@ def index(request):
 
     for producto in productos:
         referencia_modificada = producto.referencia.split('_')[0].capitalize()
+
+        if referencia_modificada == 'Pinta':
+            referencia_modificada = 'Pintalabios'
+
+        if referencia_modificada == 'Locion':
+            referencia_modificada = 'Loción'
+
+        if referencia_modificada == 'Cosmetico':
+            referencia_modificada = 'Cosmético'
+
         producto_dict = {
             'referencia': producto.referencia,
             'referencia_mod': referencia_modificada,
@@ -66,6 +76,9 @@ def index(request):
 
 @staff_member_required
 def registrar_producto(request):
+    if request.method == 'POST':
+        codigo = request.POST.get('codigo')
+        print(codigo)
     return render(request, "registrar_producto.html")
 
 
