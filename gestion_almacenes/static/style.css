@@ -46,3 +46,6 @@ body {
     color: #777777;
     margin-bottom: 10px;
 }
+a {
+    text-decoration: none;
+  }

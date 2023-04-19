@@ -17,14 +17,16 @@
     <div class="row">
         {% for producto in productos %}
         <div class="col-sm-4 main-row">
+            <a href="{% url 'detail' producto.referencia %}">
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">{{ producto.referencia }}</h5>
+                    <h5 class="card-title">{{ producto.referencia_mod }}</h5>
                     <p class="card-text">Proveedor: {{ producto.proveedor }}</p>
                     <p class="card-text">Unidades disponibles: {{ producto.cantidad_stock }}</p>
                     <p class="card-text">Peso por unidad: {{ producto.peso_por_unidad }} kg</p>
                 </div>
             </div>
+            </a>
         </div>
         {% endfor %}
     </div>

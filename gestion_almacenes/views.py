@@ -30,7 +30,8 @@ def index(request):
     for producto in productos:
         referencia_modificada = producto.referencia.split('_')[0].capitalize()
         producto_dict = {
-            'referencia': referencia_modificada,
+            'referencia': producto.referencia,
+            'referencia_mod': referencia_modificada,
             'proveedor': producto.proveedor,
             'cantidad_stock': producto.cantidad_stock,
             'peso_por_unidad': producto.peso_por_unidad,
@@ -40,11 +41,6 @@ def index(request):
     return render(request, 'index.html', {'productos': productos_modificados, 'form': form})
 
 
-
-
-
-
-
 @staff_member_required
 def registrar_producto(request):
     return render(request, "registrar_producto.html")
@@ -52,7 +48,8 @@ def registrar_producto(request):
 
 def producto_detail(request, id):
     producto = get_object_or_404(models.Producto, referencia=id)
-    return render(request, "product_detail.html", {'producto': producto}) 
+    nombre_referencia = producto.referencia.split('_')[0].capitalize()
+    return render(request, "product_detail.html", {'producto': producto, 'nombre_referencia': nombre_referencia}) 
 
 
 
