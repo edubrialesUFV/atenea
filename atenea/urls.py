@@ -26,7 +26,7 @@ urlpatterns = [
     path('register/', views.register, name="register"),
     path('login/', views.ClienteLoginView.as_view(), name="login"),
     path('logout/', views.logout_view, name="logout"),
-    path('checkout/', checkout),
+    path('checkout/', checkout, name='checkout'),
     path('checkout/procesar_compra/', procesar_compra, name='procesar_compra'),
 
 ]
