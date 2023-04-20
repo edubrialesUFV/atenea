@@ -100,8 +100,6 @@ def anadirAcesta(request, id):
         if cantidad > producto.cantidad_stock:
             messages.error(request, f'Sólo hay {producto.cantidad_stock} unidades disponibles')
         else:
-            # Add product to session cart
-            print("AAAAAAAAAAAAAAAA")
             carrito = request.session.get('carrito', {})
             carrito[producto.id] = {'referencia': referencia, 'cantidad': cantidad}
             request.session['carrito'] = carrito
@@ -113,7 +111,6 @@ def anadirAcesta(request, id):
 
 
 def checkout(request):
-    # Obtener los productos en el carrito del usuario (almacenados en una variable de sesión)
     carrito = request.session.get('carrito', {})
     productos = []
     total = 0
@@ -131,7 +128,6 @@ def checkout(request):
             'subtotal': subtotal,
         })
 
-    # Mostrar los productos y el total en la página de checkout de venta
     context = {
         'productos': productos,
         'total': total,
@@ -167,7 +163,6 @@ def procesar_compra(request):
         
         cliente = Cliente.objects.get(id=request.user.id)
 
-        # Crear un nuevo pedido en la base de datos
         pedido = Pedido.objects.create(
             cliente=cliente,
             fecha_hora_pedido=timezone.now(),
@@ -175,10 +170,18 @@ def procesar_compra(request):
             agencia_transporte=agencia_transporte,
         )
         
-        # Vaciar el carrito
-        # request.session['carrito'] = {}
-        
         messages.success(request, 'La compra se ha procesado correctamente.')
         return redirect('/')
     else:
         return redirect('/checkout')
+
+from django.views.decorators.http import require_POST
+
+@require_POST
+def eliminar_producto(request, producto_id):
+    carrito = request.session.get('carrito', {})
+    producto_id = str(producto_id)
+    if producto_id in carrito:
+        del carrito[producto_id]
+        request.session['carrito'] = carrito
+    return redirect('/checkout/')

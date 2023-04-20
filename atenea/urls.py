@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from gestion_almacenes import views, admin
-from gestion_almacenes.views import checkout, procesar_compra
+from gestion_almacenes.views import checkout, procesar_compra, eliminar_producto
 
 urlpatterns = [
     path('admin/registrar_producto/', views.registrar_producto, name="registrar_producto"),
@@ -28,5 +28,6 @@ urlpatterns = [
     path('logout/', views.logout_view, name="logout"),
     path('checkout/', checkout, name='checkout'),
     path('checkout/procesar_compra/', procesar_compra, name='procesar_compra'),
+    path('eliminar/<int:producto_id>/', eliminar_producto, name='eliminar_producto'),
 
 ]
