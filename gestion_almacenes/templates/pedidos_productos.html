@@ -1,31 +1,29 @@
 {% extends "admin/base.html" %}
 
-{% block title %}Pedidos y Productos{% endblock %}
-
 {% block content %}
-<h1>Pedidos y Productos</h1>
-<table border="1">
-    <thead>
-        <tr>
-            <th>Pedido</th>
-            <th>Producto</th>
-            <th>Posición</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for pedido in pedidos %}
-            {% for pedido_producto in pedido.pedidoproducto_set.all %}
-                <tr>
-                    <td>{{ pedido }}</td>
-                    <td>{{ pedido_producto.producto }}</td>
-                    <td>
-                        {% for producto_posicion in pedido_producto.producto.productoposicion_set.all %}
-                            {{ producto_posicion.posicion }}
-                        {% endfor %}
-                    </td>
-                </tr>
-            {% endfor %}
+<h1>Pedidos y productos</h1>
+
+<!-- Formulario de búsqueda -->
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Buscar</button>
+</form>
+
+<table>
+    <tr>
+        <th>Pedido</th>
+        <th>Producto</th>
+        <th>Posición</th>
+    </tr>
+    {% for pedido_productos in pedidos_productos_list %}
+        {% for producto in pedido_productos.productos %}
+            <tr>
+                <td>{{ pedido_productos.pedido }}</td>
+                <td>{{ producto.producto }}</td>
+                <td>{{ producto.producto.productoposicion_set.first.posicion }}</td>
+            </tr>
         {% endfor %}
-    </tbody>
+    {% endfor %}
 </table>
 {% endblock %}

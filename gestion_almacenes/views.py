@@ -14,7 +14,8 @@ from django.urls import reverse
 from .models import Producto, Pedido, Cliente
 from django.utils import timezone
 from gestion_almacenes.models import Pedido, PedidoProducto, ProductoPosicion
-
+from .models import Pedido, PedidoProducto
+from .forms import PedidoFilterForm
 
 from .forms import FiltroProveedorForm
 class ClienteLoginView(LoginView):
@@ -188,8 +189,25 @@ def eliminar_producto(request, producto_id):
 
 
 def pedidos_productos(request):
-    pedidos = Pedido.objects.select_related('cliente').prefetch_related('pedidoproducto_set__producto__productoposicion_set__posicion').all()
+    if request.method == 'POST':
+        form = PedidoFilterForm(request.POST)
+        if form.is_valid():
+            pedido = form.cleaned_data.get('pedido')
+            if pedido:
+                pedidos = Pedido.objects.filter(id=pedido.id)
+            else:
+                pedidos = Pedido.objects.all()
+        else:
+            pedidos = Pedido.objects.all()
+    else:
+        form = PedidoFilterForm()
+        pedidos = Pedido.objects.all()
 
-    context = {'pedidos': pedidos}
+    pedidos_productos_list = []
+    for pedido in pedidos:
+        productos = PedidoProducto.objects.filter(pedido=pedido)
+        pedidos_productos_list.append({'pedido': pedido, 'productos': productos})
+
+    context = {'pedidos_productos_list': pedidos_productos_list, 'form': form}
     return render(request, 'pedidos_productos.html', context)
 
