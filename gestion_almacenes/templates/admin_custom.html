@@ -18,6 +18,8 @@
     <h2>Enlaces personalizados</h2>
     <ul>
         <li><a href="{% url 'registrar_producto' %}">Registrar producto</a></li>
+        <!-- Agrega un enlace a la nueva página de visualización -->
+        <li><a href="{% url 'admin:pedidos_productos' %}">Ver pedidos y productos</a></li>
     </ul>
 </div>
 {% endblock %}

@@ -13,7 +13,7 @@ from .forms import FiltroProveedorForm
 from django.urls import reverse
 from .models import Producto, Pedido, Cliente
 from django.utils import timezone
-
+from gestion_almacenes.models import Pedido, PedidoProducto, ProductoPosicion
 
 
 from .forms import FiltroProveedorForm
@@ -185,3 +185,11 @@ def eliminar_producto(request, producto_id):
         del carrito[producto_id]
         request.session['carrito'] = carrito
     return redirect('/checkout/')
+
+
+def pedidos_productos(request):
+    pedidos = Pedido.objects.select_related('cliente').prefetch_related('pedidoproducto_set__producto__productoposicion_set__posicion').all()
+
+    context = {'pedidos': pedidos}
+    return render(request, 'pedidos_productos.html', context)
+

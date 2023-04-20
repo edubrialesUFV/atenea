@@ -1,0 +1,31 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Pedidos y Productos{% endblock %}
+
+{% block content %}
+<h1>Pedidos y Productos</h1>
+<table border="1">
+    <thead>
+        <tr>
+            <th>Pedido</th>
+            <th>Producto</th>
+            <th>Posición</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for pedido in pedidos %}
+            {% for pedido_producto in pedido.pedidoproducto_set.all %}
+                <tr>
+                    <td>{{ pedido }}</td>
+                    <td>{{ pedido_producto.producto }}</td>
+                    <td>
+                        {% for producto_posicion in pedido_producto.producto.productoposicion_set.all %}
+                            {{ producto_posicion.posicion }}
+                        {% endfor %}
+                    </td>
+                </tr>
+            {% endfor %}
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
