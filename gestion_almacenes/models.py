@@ -48,6 +48,7 @@ class Producto(models.Model):
     proveedor = models.ForeignKey(Proveedor, on_delete=models.CASCADE)
     cantidad_stock = models.PositiveIntegerField(default=0)
     cantidad_minima_reaprovisionamiento = models.PositiveIntegerField()
+    precio = models.PositiveIntegerField(default=0)
     peso_por_unidad = models.FloatField(default=200)
 
     def __str__(self):
@@ -88,6 +89,7 @@ class Posicion(models.Model):
         ('PIC', 'Picking'),
         ('STO', 'Stock'),
     ]
+    id = models.CharField(max_length=6, primary_key=True)
     tipo_posicion = models.CharField(max_length=3, choices=TIPO_POSICION_CHOICES)
     capacidad = models.PositiveIntegerField()
     unidades_ocupadas = models.PositiveIntegerField(default=0)
@@ -99,7 +101,6 @@ class Posicion(models.Model):
 class ProductoPosicion(models.Model):
     producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
     posicion = models.ForeignKey(Posicion, on_delete=models.CASCADE)
-    cantidad_almacenada = models.PositiveIntegerField()
 
     def __str__(self):
         return f"{self.producto} - {self.posicion}"
