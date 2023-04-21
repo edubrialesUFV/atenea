@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 
 <div class="container">
   <h1 class="text-center mb-4">Checkout</h1>
@@ -40,143 +41,44 @@
       </tr>
     </tfoot>
   </table>
-  
-  <form method="post" action="{% url 'procesar_compra' %}">
+  </div>
+<form method="post" action="{% url 'procesar_compra' %}">
     {% csrf_token %}
-    <div class="row mb-3">
-      <div class="col-sm-4">
-        <div class="btn-group" role="group">
-          <input type="hidden" name="tipo_envio" id="tipo_envio">
-          <button type="button" class="btn btn-outline-secondary dropdown-toggle form-select" data-bs-toggle="dropdown" aria-expanded="false">
-            Seleccione un tipo de envío
-          </button>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="#" data-value="EST">Estándar</a></li>
-            <li><a class="dropdown-item" href="#" data-value="URG">Urgente</a></li>
-          </ul>
-        </div>
-      </div>
-      <div class="col-sm-4">
-        <div class="btn-group" role="group">
-          <input type="hidden" name="agencia_transporte" id="agencia_transporte">
-          <button type="button" class="btn btn-outline-secondary dropdown-toggle form-select" data-bs-toggle="dropdown" aria-expanded="false">
-            Seleccione una agencia de transporte
-          </button>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="#" data-value="COR">Correos</a></li>
-            <li><a class="dropdown-item" href="#" data-value="SEU">Seur</a></li>
-            <li><a class="dropdown-item" href="#" data-value="DHL">DHL</a></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-    
     <div class="text-center">
-      <button class="btn btn-primary" type="submit">Comprar</button>
+      <h4>Tipo de envío:</h4>
+      <div class="btn-group btn-group-toggle mb-4" data-toggle="buttons">
+        <label class="btn btn-secondary active">
+          <input type="radio" name="tipo_envio" id="option1" autocomplete="off" value="EST" checked>Estándar
+        </label>
+        <label class="btn btn-secondary">
+          <input type="radio" name="tipo_envio" id="option2" autocomplete="off" value="URG">Urgente
+        </label>
+      </div>
+
+      <h4>Transportista:</h4>
+      <div class="btn-group btn-group-toggle mb-4" data-toggle="buttons">
+        <label class="btn btn-secondary active">
+          <input type="radio" name="agencia_transporte" id="option1" autocomplete="off" value="DHL" checked>DHL
+        </label>
+        <label class="btn btn-secondary">
+          <input type="radio" name="agencia_transporte" id="option2" autocomplete="off" value="COR">Correos
+        </label>
+        <label class="btn btn-secondary">
+          <input type="radio" name="agencia_transporte" id="option2" autocomplete="off" value="SEU">Seur
+        </label>
+      </div>
+      <div>
+        <button class="btn btn-primary" type="submit">Comprar</button>
+      </div>
     </div>
   </form>
 </div>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-<script>
-  $(document).ready(function() {
-    $('.dropdown-menu a').click(function(e) {
-      e.preventDefault();
-      var value = $(this).data('value');
-      $(this).closest('.btn-group').find('input[type="hidden"]').val(value);
-      $(this).closest('.btn-group').find('.dropdown-toggle').text($(this).text());
-    });
-  });
-</script>
-<script>
-  // Obtener todos los botones dropdown
-  const dropdowns = document.querySelectorAll('.btn-group.form-select');
-
-  // Para cada botón dropdown
-  dropdowns.forEach((dropdown) => {
-    // Obtener el input hidden y el botón que despliega el menú
-    const input = dropdown.querySelector('input[type="hidden"]');
-    const button = dropdown.querySelector('.dropdown-toggle');
-
-    // Para cada elemento de la lista del menú
-    dropdown.querySelectorAll('.dropdown-item').forEach((item) => {
-      // Al hacer clic en el elemento de la lista
-      item.addEventListener('click', () => {
-        // Obtener el valor del atributo data-value
-        const value = item.getAttribute('data-value');
-
-        // Asignar el valor al input hidden
-        input.value = value;
-
-        // Cambiar el texto del botón al valor seleccionado
-        button.textContent = item.textContent;
-      });
-    });
-  });
-</script>
-<script>
-  // Obtener todos los formularios de eliminación
-  const deleteForms = document.querySelectorAll('form[action$="/eliminar/"]');
-
-  // Para cada formulario de eliminación
-  deleteForms.forEach((form) => {
-    // Agregar un controlador de evento al botón de envío del formulario
-    form.querySelector('button[type="submit"]').addEventListener('click', (event) => {
-      event.preventDefault(); // Detener la acción predeterminada del botón de envío
-
-      // Mostrar una confirmación de eliminación y, si se confirma, enviar el formulario
-      if (confirm('¿Estás seguro de que quieres eliminar este producto?')) {
-        form.submit();
-      }
-    });
-  });
-</script>
 <style>
 
-  /* Estilos para los nuevos campos */
-  .btn-group.form-select {
-    position: relative;
-  }
-  
-  .btn-group.form-select input[type="hidden"] {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0;
-    z-index: -1;
-  }
-  
-  .btn-group.form-select .dropdown-toggle::after {
-    display: none;
-  }
-  
-  .btn-group.form-select .dropdown-toggle:focus {
-    box-shadow: none;
-    border-color: #ced4da;
-  }
-  
-  .btn-group.form-select .dropdown-menu {
-    max-height: 200px;
-    overflow-y: auto;
-  }
-  
-  .btn-group.form-select .dropdown-item {
-    display: block;
-    width: 100%;
-    padding: 0.5rem 1rem;
-    color: #212529;
-    text-align: left;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  
-  .btn-group.form-select .dropdown-item:hover,
-  .btn-group.form-select .dropdown-item:focus {
-    color: #212529;
-    background-color: #f8f9fa;
-  }
   
   .container {
     max-width: 800px;
@@ -220,9 +122,6 @@
     font-weight: bold;
   }
   
-  button {
-    margin-top: 1rem;
-  }
   
   /* Estilos para los nuevos campos */
   tfoot td[colspan="4"] {

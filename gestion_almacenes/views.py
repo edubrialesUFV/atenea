@@ -161,7 +161,7 @@ def procesar_compra(request):
         
         tipo_envio = request.POST.get('tipo_envio')
         agencia_transporte = request.POST.get('agencia_transporte')
-        
+        print(tipo_envio)
         cliente = Cliente.objects.get(id=request.user.id)
 
         pedido = Pedido.objects.create(
@@ -170,6 +170,17 @@ def procesar_compra(request):
             tipo_envio=tipo_envio,
             agencia_transporte=agencia_transporte,
         )
+
+        for id, item in carrito.items():
+            producto = Producto.objects.get(id=id)
+            cantidad = item['cantidad']
+            pedidoproducto = PedidoProducto.objects.create(
+                pedido = pedido,
+                producto = producto,
+                cantidad = cantidad,
+            )
+           
+        
         
         messages.success(request, 'La compra se ha procesado correctamente.')
         return redirect('/')
