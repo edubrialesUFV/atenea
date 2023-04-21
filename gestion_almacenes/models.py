@@ -50,6 +50,8 @@ class Producto(models.Model):
     cantidad_minima_reaprovisionamiento = models.PositiveIntegerField()
     precio = models.PositiveIntegerField(default=0)
     peso_por_unidad = models.FloatField(default=200)
+    imagen = models.ImageField(upload_to='media/', blank= True, null= True )
+
 
     def __str__(self):
         return self.referencia

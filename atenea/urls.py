@@ -17,6 +17,8 @@ from django.contrib import admin
 from django.urls import path, include
 from gestion_almacenes import views, admin
 from gestion_almacenes.views import checkout, procesar_compra, eliminar_producto
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/registrar_producto/', views.registrar_producto, name="registrar_producto"),
@@ -32,3 +34,5 @@ urlpatterns = [
     path('', include('gestion_almacenes.urls')),
 
 ]
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -4,10 +4,13 @@
 
 <div class="container mt-5">
   <div class="row">
+    {% if producto.imagen %}
     <div class="col-md-6">
-      <img src="ruta/a/imagen-del-producto.jpg" class="img-fluid" alt="Imagen del producto">
-      <!--<img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}" class="img-fluid">-->
+
+        <img src="{{ producto.imagen.url }}" class="card-img-top" alt="{{ producto.nombre_producto }}"style="width: 400px; height: 400px;">
+
     </div>
+     {% endif %}
     <div class="col-md-6">
       <h2>{{ nombre }}</h2>
       <h4>Precio: {{ producto.precio }}€</h4>
@@ -15,7 +18,7 @@
         <!--<li><strong>Referencia:</strong> {{ producto.referencia }}</li>-->
         <li><strong>Proveedor:</strong> {{ producto.proveedor }}</li>
         <li><strong>Cantidad en stock:</strong> {{ producto.cantidad_stock }}</li>
-        <li><strong>Peso por unidad:</strong> {{ producto.peso_por_unidad }} kg</li>
+        <li><strong>Peso por unidad:</strong> {{ producto.peso_por_unidad }} gr</li>
       </ul>
       <form method="POST" action="{% url 'cesta' producto.referencia %}">
         {% csrf_token %}
@@ -30,6 +33,8 @@
     </div>
   </div>
 </div>
-{% endblock %} 
+
+{% endblock %}
+
 
 
