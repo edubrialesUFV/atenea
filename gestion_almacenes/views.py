@@ -1,23 +1,34 @@
+from io import BytesIO
+from django.conf import settings
 from django.shortcuts import render, get_object_or_404
-from django.contrib.admin.views.decorators import staff_member_required
-from gestion_almacenes import models
 from django.shortcuts import render, redirect
+from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib import messages
-from .models import Producto
-from .models import Proveedor
-# Create your views here.
-from .forms import FiltroProveedorForm, ClienteCreationForm
 from django.contrib.auth.views import LoginView
 from django.contrib.auth import login, logout
-from .forms import FiltroProveedorForm
 from django.urls import reverse
-from .models import Producto, Pedido, Cliente
 from django.utils import timezone
-from gestion_almacenes.models import Pedido, PedidoProducto, ProductoPosicion
-from .models import Pedido, PedidoProducto
-from .forms import PedidoFilterForm
+from django.http import HttpResponse
+from django.template.loader import get_template
 
+from gestion_almacenes import models
+from gestion_almacenes.models import Pedido, PedidoProducto, ProductoPosicion
+
+from .models import Producto, Pedido, Cliente
+from .models import Producto
+from .models import Proveedor
+from .models import Pedido, PedidoProducto
+
+from .forms import FiltroProveedorForm, ClienteCreationForm
 from .forms import FiltroProveedorForm
+from .forms import PedidoFilterForm
+from .forms import FiltroProveedorForm
+
+from xhtml2pdf import pisa
+
+from datetime import timedelta
+from django.utils import timezone
+
 class ClienteLoginView(LoginView):
     template_name = 'login.html'
     def get_success_url(self):
@@ -168,8 +179,11 @@ from django.contrib.auth.decorators import login_required
 def procesar_compra(request):
     if request.method == 'POST':
         carrito = request.session.get('carrito', {})
+        unidadesTotales = 0
+        pesoTotal = 0
         productos = []
         total = 0
+        entrega = ''
         for id, item in carrito.items():
             try:
                 producto = Producto.objects.get(id=id)
@@ -197,18 +211,57 @@ def procesar_compra(request):
             agencia_transporte=agencia_transporte,
         )
 
+        print(pedido.id)
         for id, item in carrito.items():
             producto = Producto.objects.get(id=id)
             cantidad = item['cantidad']
+            unidadesTotales = unidadesTotales + cantidad
+            
             pedidoproducto = PedidoProducto.objects.create(
                 pedido = pedido,
                 producto = producto,
                 cantidad = cantidad,
             )
            
+        print(pedido.agencia_transporte)
         
+        cliente = request.user
+        
+       # Genera el PDF y guárdalo en el servidor
+        output_dir = os.path.join(settings.MEDIA_ROOT, 'etiquetas')
+        os.makedirs(output_dir, exist_ok=True)
+        filename = f"Comprobante_{cliente.nombre_cliente}_{timezone.now().strftime('%Y-%m-%d_%H-%M-%S')}.pdf"
+        output_path = os.path.join(output_dir, filename)
+
+        if pedido.agencia_transporte == "DHL":
+            pdf = generar_pdf('comprobanteDHL.html', {'cliente': cliente, 'pedido': pedido, 'productos': productos }, output_path)
+        
+        elif pedido.agencia_transporte == "COR":
+            pesoTotal = unidadesTotales*0.2
+            pdf = generar_pdf('comprobanteCorreos.html', {'cliente': cliente, 'pedido': pedido, 'productos': productos , 'carrito': carrito, 'unidadesTotales': unidadesTotales, 'pesoTotal': pesoTotal}, output_path)
+
+        elif pedido.agencia_transporte == "SEU":
+            if tipo_envio == "EST":
+                now = timezone.now()
+                entrega = now + timedelta(days=3)
+            elif tipo_envio == "URG":
+                now = timezone.now()
+                entrega = now + timedelta(days=3)
+            
+            pesoTotal = unidadesTotales*0.2
+            pdf = generar_pdf('comprobanteSeur.html', {'cliente': cliente, 'pedido': pedido, 'productos': productos , 'carrito': carrito, 'unidadesTotales': unidadesTotales, 'pesoTotal': pesoTotal, 'entrega':entrega}, output_path)
+        
+
+        if pdf:
+            # Opcional: guarda la ruta del archivo en el modelo Pedido
+            # pedido = pedido.objects.get( ... ) # Elimina esta línea
+            pedido.comprobante = output_path
+            pedido.save()
+
         
         messages.success(request, 'La compra se ha procesado correctamente.')
+        request.session['carrito'] = {}
+        request.session.save() 
         return redirect('/')
     else:
         return redirect('/checkout')
@@ -247,4 +300,20 @@ def pedidos_productos(request):
 
     context = {'pedidos_productos_list': pedidos_productos_list, 'form': form}
     return render(request, 'pedidos_productos.html', context)
+
+
+import os
+
+def generar_pdf(template_src, context_dict={}, output_filename=None):
+    template = get_template(template_src)
+    html = template.render(context_dict)
+    result = BytesIO()
+    pdf = pisa.pisaDocument(BytesIO(html.encode("UTF-8")), result)
+    if not pdf.err:
+        if output_filename:
+            with open(output_filename, "wb") as f:
+                f.write(result.getvalue())
+        return result.getvalue()
+    else:
+        return None
 

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Comprobante de Compra</title>
+    <style>
+
+    </style>
+</head>
+<body>
+    <h1>Comprobante de Compra</h1>
+    <h2>Pedido solicitado a Seur:</h2>
+
+    <p>Día de entrega: {{ entrega }}</p>
+    <p>Tipo de pedido: {{ pedido.tipo_envio }}</p>
+    <p>ID de pedido: {{ pedido.id }}</p>
+    <p>Nombre del cliente: {{ cliente.nombre_cliente }}</p>
+    <p>Dirección del cliente: {{ cliente.direccion_cliente }}</p>
+    <p>Peso total: {{ pesoTotal }} Kg</p>
+
+
+</body>
+</html>

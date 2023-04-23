@@ -6,6 +6,9 @@ __pycache__
 db.sqlite3
 ./gestion_almacenes/__pycache__
 
+media/comprobantes
+media/etiquetas
+
 # Backup files # 
 *.bak 
 
