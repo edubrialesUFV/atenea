@@ -101,32 +101,6 @@ def registrar_producto(request):
 def producto_detail(request, id):
     producto = get_object_or_404(models.Producto, referencia=id)
     nombre_referencia = producto.referencia.split('_')[0].capitalize()
-    if 'SOMBRAS' in producto.referencia.upper():
-        producto.imagen = 'media/sombras.jpg'
-    elif 'CREMA' in producto.referencia.upper():
-        producto.imagen = 'media/crema.jpg'
-    elif 'LOCION' in producto.referencia.upper():
-        producto.imagen = 'media/locion.jpg'
-    elif 'POLVOS_MAQUILLAJE ' in producto.referencia.upper():
-        producto.imagen = 'media/polvos.jpg'
-    elif 'MAQUILLAJE' in producto.referencia.upper():
-        producto.imagen = 'media/maquillaje.jpg'
-    elif 'PINTA' in producto.referencia.upper():
-        producto.imagen = 'media/pintalabios.jpg'
-    elif 'EYELINER' in producto.referencia.upper():
-        producto.imagen = 'media/eyeliner.jpg'
-    elif 'COSMETICO' in producto.referencia.upper():
-        producto.imagen = 'media/cosmetico.jpg'
-    elif 'COLORETE' in producto.referencia.upper():
-        producto.imagen = 'media/colorete.jpg'
-    elif 'RIMMEL' in producto.referencia.upper():
-        producto.imagen = 'media/rimmel.jpg'
-    elif 'PERFUME' in producto.referencia.upper():
-        producto.imagen = 'media/perfume.jpg'
-    else:
-        # imagen por defecto para productos sin referencia específica
-        producto.imagen = 'media/default.jpg'
-
     return render(request, "product_detail.html", {'producto': producto, 'nombre': nombre_referencia})
 
 def anadirAcesta(request, id):

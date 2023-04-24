@@ -72,7 +72,8 @@ class Pedido(models.Model):
         ('DHL', 'DHL'),
     ]
     agencia_transporte = models.CharField(max_length=3, choices=AGENCIA_TRANSPORTE_CHOICES)
-
+    etiqueta = models.ImageField(upload_to='media/', blank= True, null= True )
+    albaran = models.FileField(upload_to='ruta/de/almacenamiento/', blank= True, null= True)
     def __str__(self):
         return f"{self.cliente} - {self.fecha_hora_pedido}"
 
