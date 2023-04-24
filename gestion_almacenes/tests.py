@@ -162,3 +162,42 @@ class AnadirACestaTest(TestCase):
         # self.assertEqual(str(messages[0]), f'Sólo hay {self.producto.cantidad_stock} unidades disponibles')
 
 
+
+
+class CheckoutTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+
+        self.proveedor = Proveedor.objects.create(nombre_proveedor='Proveedor 1')
+
+        self.producto = Producto.objects.create(
+            referencia='ABC123',
+            proveedor=self.proveedor,
+            cantidad_stock=50,
+            cantidad_minima_reaprovisionamiento=10,
+            precio=100,
+            peso_por_unidad=200,
+        )
+
+    def test_checkout(self):
+        # Añadir el producto al carrito
+        carrito = {str(self.producto.id): {'referencia': self.producto.referencia, 'cantidad': 2}}
+        session = self.client.session
+        session['carrito'] = carrito
+        session.save()
+
+        # Acceder a la página de checkout
+        response = self.client.get(reverse('checkout'))
+
+        # Comprobar que se carga la página correctamente
+        self.assertEqual(response.status_code, 200)
+
+        # Verificar que el producto está en la lista de productos del contexto
+        self.assertEqual(len(response.context['productos']), 1)
+        self.assertEqual(response.context['productos'][0]['id'], self.producto.id)
+        self.assertEqual(response.context['productos'][0]['cantidad'], 2)
+        self.assertEqual(response.context['productos'][0]['precio'], self.producto.id)
+        self.assertEqual(response.context['productos'][0]['subtotal'], self.producto.id * 2)
+
+        # Verificar que el total es correcto
+        self.assertEqual(response.context['total'], self.producto.id * 2)
