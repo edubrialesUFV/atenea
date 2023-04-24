@@ -133,10 +133,12 @@ def anadirAcesta(request, id):
     producto = get_object_or_404(models.Producto, referencia=id)
     referencia = producto.referencia
     nombre_referencia = producto.referencia.split('_')[0].capitalize()
+    
     if request.method == 'POST':
         cantidad = int(request.POST.get('cantidad', 0))
+        
         if cantidad > producto.cantidad_stock:
-            messages.error(request, f'Sólo hay {producto.cantidad_stock} unidades disponibles')
+            return redirect(f'/product_detail/{producto.id}/')  # Redirige al usuario a la página de detalle del producto
         else:
             carrito = request.session.get('carrito', {})
             carrito[producto.id] = {'referencia': referencia, 'cantidad': cantidad}
@@ -146,6 +148,7 @@ def anadirAcesta(request, id):
     else:
         messages.error(request, f'Sólo hay {producto.cantidad_stock} unidades disponibles')
         return render(request, "product_detail.html", {'producto': producto, 'nombre': nombre_referencia})
+
 
 
 def checkout(request):
