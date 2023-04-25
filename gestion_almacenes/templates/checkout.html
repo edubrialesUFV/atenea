@@ -21,9 +21,9 @@
       <tr>
         <td>{{ producto.id }}</td>
         <td>{{ producto.nombre }}</td>
-        <td>{{ producto.precio }}</td>
+        <td>{{ producto.precio }} €</td>
         <td>{{ producto.cantidad }}</td>
-        <td>{{ producto.subtotal }}</td>
+        <td>{{ producto.subtotal }} €</td>
         <td>
           <form method="post" action="{% url 'eliminar_producto' producto.id %}">
             {% csrf_token %}
@@ -36,7 +36,7 @@
     <tfoot>
       <tr>
         <td colspan="4" style="text-align: right;">Total:</td>
-        <td>{{ total }}</td>
+        <td>{{ total }} €</td>
         <td></td>
       </tr>
     </tfoot>

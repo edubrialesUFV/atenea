@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Albarán</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 5px;
+        }
+        th {
+            background-color: lightgray;
+        }
+    </style>
+</head>
+<body>
+    <h1>Albarán para {{ cliente.nombre_cliente }}</h1>
+    
+    <p>Información de envío:</p>
+    <ul>
+        <li>Nombre: {{ cliente.nombre_cliente }}</li>
+        <li>Email: {{ cliente.email }}</li>
+        <li>Dirección: {{ cliente.direccion_cliente }}</li>
+        <li>Codigo postal: {{ cliente.codigo_postal }}</li>
+    </ul>
+    <table>
+        <tr>
+            <th>Referencia</th>
+            <th>Producto</th>
+            <th>Cantidad</th>
+            <th>Precio total</th>
+            <th>Subtotal</th>
+        </tr>
+        {% for producto in productos %}
+            <tr>
+                <td style="width: 100px; text-align: center; border: 1px solid black;">{{ producto.producto.id }}</td>
+                <td style="width: 100px; text-align: left; border: 1px solid black;">{{ producto.producto.referencia }}</td>
+                <td style="width: 100px; text-align: center; border: 1px solid black;">{{ producto.cantidad }} </td>
+                <td style="width: 100px; text-align: center; border: 1px solid black;">{{ producto.producto.precio }} € </td>
+                <td style="width: 100px; text-align: center; border: 1px solid black;">{{ producto.subtotal }} € </td>
+            </tr>
+        {% endfor %}
+        <tr>
+            <td colspan="4">Total</td>
+            <td style="width: 100px; text-align: center; border: 1px solid black;">{{ total }} € </td>
+        </tr>
+    </table>
+</body>
+</html>

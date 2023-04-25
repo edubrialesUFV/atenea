@@ -157,7 +157,7 @@ def checkout(request):
     total = 0
     for id, item in carrito.items():
         producto = get_object_or_404(models.Producto, id=id)
-        precio = producto.id
+        precio = producto.precio
         subtotal = precio * item['cantidad']
         total += subtotal
         productos.append({
@@ -261,7 +261,31 @@ def procesar_compra(request):
             pedido.comprobante = output_path
             pedido.save()
 
-        
+        output_dir = os.path.join(settings.MEDIA_ROOT, 'albaranes')
+        filename = f"Albaran_{cliente.nombre_cliente}_{timezone.now().strftime('%Y-%m-%d_%H-%M-%S')}.pdf"
+        output_path = os.path.join(output_dir, filename)
+
+        cliente = Cliente.objects.get(id=request.user.id)
+        productos = []
+        for id, item in carrito.items():
+            try:
+                producto = Producto.objects.get(id=id)
+                productos.append({
+                    'producto': producto,
+                    'cantidad': item['cantidad'],
+                })
+            except Producto.DoesNotExist:
+                raise ValueError(f"No se encontró el producto con ID '{id}'.")
+                
+        context = {
+            'cliente': cliente,
+            'productos': productos,
+        }
+
+        pdf = generar_albaran('albaran.html', context, output_path)
+
+
+
         messages.success(request, 'La compra se ha procesado correctamente.')
         request.session['carrito'] = {}
         request.session.save() 
@@ -306,6 +330,33 @@ def pedidos_productos(request):
 
 
 import os
+
+def generar_albaran(template_src, context_dict={}, output_filename=None):
+    productos = context_dict.get('productos', [])  # Obtén la lista de productos del contexto
+    
+    total = 0  # Inicializa el total en 0
+    
+    # Calcula el subtotal de cada producto y suma al total
+    for producto in productos:
+        precio = producto['producto'].precio
+        cantidad = producto['cantidad']
+        subtotal = precio * cantidad
+        producto['subtotal'] = subtotal  # Agrega el subtotal al producto en el contexto
+        total += subtotal
+    
+    context_dict['total'] = total
+
+    template = get_template(template_src)
+    html = template.render(context_dict)
+    result = BytesIO()
+    pdf = pisa.pisaDocument(BytesIO(html.encode("UTF-8")), result)
+    if not pdf.err:
+        if output_filename:
+            with open(output_filename, "wb") as f:
+                f.write(result.getvalue())
+        return result.getvalue()
+    else:
+        return None
 
 def generar_pdf(template_src, context_dict={}, output_filename=None):
     template = get_template(template_src)
