@@ -197,11 +197,11 @@ class CheckoutTest(TestCase):
         self.assertEqual(len(response.context['productos']), 1)
         self.assertEqual(response.context['productos'][0]['id'], self.producto.id)
         self.assertEqual(response.context['productos'][0]['cantidad'], 2)
-        self.assertEqual(response.context['productos'][0]['precio'], self.producto.id)
-        self.assertEqual(response.context['productos'][0]['subtotal'], self.producto.id * 2)
+        self.assertEqual(response.context['productos'][0]['precio'], self.producto.precio)
+        self.assertEqual(response.context['productos'][0]['subtotal'], self.producto.precio * 2)
 
         # Verificar que el total es correcto
-        self.assertEqual(response.context['total'], self.producto.id * 2)
+        self.assertEqual(response.context['total'], self.producto.precio * 2)
 
 class IndexViewTest(TestCase):
     def setUp(self):
