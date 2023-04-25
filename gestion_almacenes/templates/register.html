@@ -4,6 +4,7 @@
 
 {% load myfilters %}
 
+<div class="contenedor">
   <h2>Registro</h2>
   <form method='POST' id="inis"  class=" mb-3 needs-validation ini">{% csrf_token %}
     {{ form.non_field_errors }}
@@ -41,4 +42,5 @@
       <button class="btn btn-primary" type="submit">Registrarse</button>
     </div>
   </form>
+</div>
 {% endblock %}
