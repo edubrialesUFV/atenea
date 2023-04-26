@@ -24,6 +24,7 @@ from .forms import FiltroProveedorForm
 from .forms import PedidoFilterForm
 from .forms import FiltroProveedorForm
 
+from .utils import pedir_proveedores, migrations_picstock
 from xhtml2pdf import pisa
 
 from datetime import timedelta
@@ -261,8 +262,11 @@ def procesar_compra(request):
 
 
         messages.success(request, 'La compra se ha procesado correctamente.')
+
         request.session['carrito'] = {}
-        request.session.save() 
+        request.session.save()
+        migrations_picstock(productos)
+        pedir_proveedores(productos)
         return redirect('/')
     else:
         return redirect('/checkout')

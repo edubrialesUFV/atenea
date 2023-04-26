@@ -2,4 +2,4 @@ django
 psycopg2
 openpyxl
 pillow
-
+xhtml2pdf
