@@ -1,4 +1,5 @@
 from io import BytesIO
+import re
 from django.conf import settings
 from django.shortcuts import render, get_object_or_404
 from django.shortcuts import render, redirect
@@ -15,7 +16,7 @@ from gestion_almacenes import models
 from gestion_almacenes.models import Pedido, PedidoProducto, ProductoPosicion
 
 from .models import Producto, Pedido, Cliente
-from .models import Producto
+from .models import Producto, Posicion
 from .models import Proveedor
 from .models import Pedido, PedidoProducto
 
@@ -24,7 +25,7 @@ from .forms import FiltroProveedorForm
 from .forms import PedidoFilterForm
 from .forms import FiltroProveedorForm
 
-from .utils import pedir_proveedores, migrations_picstock
+from .utils import pedir_proveedores, migrations_picstock, product_type
 from xhtml2pdf import pisa
 
 from datetime import timedelta
@@ -96,6 +97,40 @@ def registrar_producto(request):
     if request.method == 'POST':
         codigo = request.POST.get('codigo')
         print(codigo)
+        
+        pattern = r'^([A-Za-z]+)(\d+)-(\d+)-([A-Za-z]+)$'
+
+        match = re.match(pattern, codigo)
+        if match:
+            type_code, number, quantity, supplier = match.groups()
+            full_product_name = f'{product_type(type_code)}_{number}'
+            print(f'Nombre completo del producto: {full_product_name}')
+            print(f'Cantidad del producto: {quantity}')
+            print(f'Proveedor del producto: {supplier}')
+            quantity = int(quantity)
+            nuevo_producto = Producto.objects.get(referencia = full_product_name)
+            nuevo_producto.cantidad_stock = nuevo_producto.cantidad_stock + quantity
+            nuevo_producto.save()
+            posiciones = ProductoPosicion.objects.filter(producto = nuevo_producto).order_by("posicion")
+            posicion_picking = Posicion.objects.get(id = posiciones[0].posicion.id)
+            posicion_stock = Posicion.objects.get(id = posiciones[1].posicion.id)
+            if posicion_picking.unidades_ocupadas < 20:
+                cantidad_restante = 20 - posicion_picking.unidades_ocupadas
+                posicion_picking.unidades_ocupadas = posicion_picking.unidades_ocupadas + cantidad_restante
+                cantidad_restante = quantity - cantidad_restante
+                posicion_stock.unidades_ocupadas = posicion_stock.unidades_ocupadas + cantidad_restante
+                posicion_picking.save()
+                posicion_stock.save()
+                messages.success(request, f'Se han añadido {quantity} unidades de {full_product_name} al sistema')
+                return redirect('/admin')
+            else:
+                posicion_stock.unidades_ocupadas = posicion_stock.unidades_ocupadas + quantity
+                posicion_stock.save()
+                messages.success(request, f'Se han añadido {quantity} unidades de {full_product_name} al sistema')
+                return redirect('/admin')
+        else:
+            print('El código proporcionado no coincide con el patrón esperado.')
+            messages.error(request, f'El codigo proporcionado no sigue el formato patron esperado')
     return render(request, "registrar_producto.html")
 
 

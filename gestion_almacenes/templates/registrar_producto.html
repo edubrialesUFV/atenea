@@ -2,10 +2,21 @@
 {% block title %} Nuevo Producto{% endblock%}
 {% block content %}
 <h1>Registrar nuevo pedido terminal</h1>
-<form action="" method="post">
+<form method="post">
     {% csrf_token %}
     <label for="fname">Registar producto</label>
-    <input type="text" id="codigo" name="codigo" placeholder="CODIGO PRODUCTO">
+    <input type="text" id="codigo" name="codigo" placeholder="RRRR-CC-PROV">
     <input type="submit" value="Registrar">
 </form>
+<br>
+<strong>El patron del codigo debe de seguir la siguiente estrctura:</strong>
+
+<ul>
+    <li>RRRR: referencia del producto. </li>
+        <ul>
+            <li>Ejemplo: COS1 - cosmetico_1</li>
+        </ul>
+    <li>CC: Cantidad del producto.</li>
+    <li>PROV: Proveedor del producto</li>
+</ul>
 {% endblock %}
