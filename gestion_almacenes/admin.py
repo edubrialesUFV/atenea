@@ -16,11 +16,13 @@ class PedidoAdmin(admin.ModelAdmin):
             path('pedidos_productos/', self.admin_site.admin_view(views.pedidos_productos), name='pedidos_productos'),
         ]
         return custom_urls + urls
+class PosicionAdmin(admin.ModelAdmin):
+    search_fields = ['id']
 
 my_admin_site.register(Producto)
 my_admin_site.register(Cliente)
 my_admin_site.register(Pedido, PedidoAdmin)  # Registra la clase PedidoAdmin junto con el modelo Pedido
 my_admin_site.register(Proveedor)
 my_admin_site.register(ProductoPosicion)
-my_admin_site.register(Posicion)
+my_admin_site.register(Posicion, PosicionAdmin)
 my_admin_site.register(PedidoProducto)
