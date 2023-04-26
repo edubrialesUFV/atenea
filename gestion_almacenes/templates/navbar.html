@@ -1,26 +1,36 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary position">
-    <a class="navbar-brand" href="{% url 'home' %}">Portal de ventas {% if user.is_authenticated %}Hi {{request.user}}{% endif %}</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav ms-auto"> <!-- Cambiamos ml-auto a ms-auto aquí -->
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'checkout' %}">Carrito</a>
-        </li>
-        <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                Cuenta
-            </a>
-          <ul class="dropdown-menu">
-            {% if user.is_authenticated %}
-            <li><a class="dropdown-item" href="{% url 'logout' %}">Cerrar Sesión</a></li>
-            {% else %}
-            <li><a class="dropdown-item" href="{% url 'login' %}">Iniciar Sesión</a></li>
-            <li><a class="dropdown-item" href="{% url 'register' %}">Registrarse</a></li>
-            {% endif %}
-          </ul>       
-        </li>
+
+
+  
+  <div class="container">
+    <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
+      <a href="/" class="d-flex align-items-center col-md-3 mb-2 mb-md-0 text-dark text-decoration-none">
+        <img src="https://previews.123rf.com/images/shumo4ka/shumo4ka1707/shumo4ka170700012/81505116-maquillaje-studio-vector-logo-ilustraci%C3%B3n-de-cosm%C3%A9ticos-ilustraci%C3%B3n-de-letras.jpg"class="bi me-2" width="60" height="52" role="img" aria-label="Bootstrap"></img>
+      </a>
+
+      <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
+        <li><a href="{% url 'home' %}" class="nav-link px-2 link-secondary {% if page == "home" %}link-dark{% endif %}">Productos</a></li>
+        <li><a href="{% url 'pedidos_cliente' %}" class="nav-link px-2 link-secondary {% if page == "pedidos" %}link-dark{% endif %}">Mis pedidos</a></li>
+        <li><a href="{% url 'checkout' %}" class="nav-link px-2 link-secondary {% if page == "carrito" %}link-dark{% endif %}">Carrito</a></li>
       </ul>
-    </div>
-  </nav>
+      
+      <div class="col-md-3 text-end">
+        {% if user.is_authenticated %}
+        <span class="me-3"> Bienvenido {{request.user}}!</span>
+        <a href="{% url 'logout' %}">
+          <button type="button" class="btn btn-outline-primary me-2">Logout</button>
+        </a>
+        {% else %}
+        <a href="{% url 'login' %}">
+          <button type="button" class="btn btn-outline-primary me-2">Login</button>
+        </a>
+        <a href="{% url 'register' %}">
+        <button type="button" class="btn btn-primary">Registrarse</button>
+        </a>
+        {% endif %}
+      </div>
+    </header>
+  </div>
+
+  <div class="b-example-divider"></div>
+
+

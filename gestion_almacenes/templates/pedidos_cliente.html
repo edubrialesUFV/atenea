@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Detalle producto{% endblock %}
+{% block content %}
+<div class="container">
+    <h1 class="my-4">Pedidos</h1>
+    <div class="table-responsive">
+      <table class="table table-hover table-borderless">
+        <thead>
+          <tr class="table-dark">
+            <th scope="col">Nombre del pedido</th>
+            <th scope="col">Etiqueta de envío</th>
+            <th scope="col">Albarán</th>
+          </tr>
+        </thead>
+        <tbody>
+            {% for pedido in pedidos %}
+          <tr>
+            <td>{{pedido.id}} - {{pedido.cliente}} - {{pedido.fecha_hora_pedido}} </td>
+            
+            <td><a href="{{ pedido.etiqueta.url }}"><button type="button" class="btn btn-outline-primary">Ver etiqueta</button></a></td>
+            <td><a href="{{ pedido.albaran.url }}"><button type="button" class="btn btn-outline-secondary">Ver Albarán</button></a></td>
+          </tr>
+          {% endfor %}
+          <!-- Agrega más filas aquí según lo necesario -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+  
+  
+
+{% endblock %}

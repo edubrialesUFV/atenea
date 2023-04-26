@@ -31,6 +31,7 @@ urlpatterns = [
     path('logout/', views.logout_view, name="logout"),
     path('checkout/', checkout, name='checkout'),
     path('checkout/procesar_compra/', procesar_compra, name='procesar_compra'),
+    path("pedidos_cliente/",views.pedidos_cliente, name="pedidos_cliente"),
     path('eliminar/<int:producto_id>/', eliminar_producto, name='eliminar_producto'),
     path('', include('gestion_almacenes.urls')),
 

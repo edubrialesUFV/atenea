@@ -6,6 +6,8 @@ __pycache__
 db.sqlite3
 ./gestion_almacenes/__pycache__
 
+media/albaranes
+.hintrc
 media/comprobantes
 media/etiquetas
 
@@ -26,7 +28,7 @@ media/etiquetas
 .idea/**/gradle.xml 
 .idea/**/libraries 
 *.iws /out/ 
-.idea/
+.idea
 # Python # 
 *.py[cod] 
 *$py.class 

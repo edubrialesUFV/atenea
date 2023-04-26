@@ -89,7 +89,7 @@ def index(request):
         }
         productos_modificados.append(producto_dict)
 
-    return render(request, 'index.html', {'productos': productos_modificados, 'form': form})
+    return render(request, 'index.html', {'productos': productos_modificados, 'form': form, 'page': 'home'})
 
 
 @staff_member_required
@@ -130,7 +130,7 @@ def registrar_producto(request):
                 return redirect('/admin')
         else:
             print('El código proporcionado no coincide con el patrón esperado.')
-            messages.error(request, f'El codigo proporcionado no sigue el formato patron esperado')
+            messages.error(request, f'El codigo proporcionado no sigue el formato esperado')
     return render(request, "registrar_producto.html")
 
 
@@ -154,7 +154,7 @@ def anadirAcesta(request, id):
             carrito[producto.id] = {'referencia': referencia, 'cantidad': cantidad}
             request.session['carrito'] = carrito
             messages.success(request, f'{cantidad} unidades de {nombre_referencia} han sido añadidas al carrito')
-            return redirect('/checkout/')
+            return redirect('home')
     else:
         messages.error(request, f'Sólo hay {producto.cantidad_stock} unidades disponibles')
         return render(request, "product_detail.html", {'producto': producto, 'nombre': nombre_referencia})
@@ -182,6 +182,7 @@ def checkout(request):
     context = {
         'productos': productos,
         'total': total,
+        'page': 'carrito'
     }
     return render(request, 'checkout.html', context)
 
@@ -268,8 +269,9 @@ def procesar_compra(request):
         if pdf:
             # Opcional: guarda la ruta del archivo en el modelo Pedido
             # pedido = pedido.objects.get( ... ) # Elimina esta línea
-            pedido.comprobante = output_path
-            pedido.save()
+            pedido.etiqueta = f"/etiquetas/{filename}"
+            
+            
 
         output_dir = os.path.join(settings.MEDIA_ROOT, 'albaranes')
         filename = f"Albaran_{cliente.nombre_cliente}_{timezone.now().strftime('%Y-%m-%d_%H-%M-%S')}.pdf"
@@ -293,8 +295,12 @@ def procesar_compra(request):
         }
 
         pdf = generar_albaran('albaran.html', context, output_path)
-
-
+        if pdf:
+            # Opcional: guarda la ruta del archivo en el modelo Pedido
+            # pedido = pedido.objects.get( ... ) # Elimina esta línea
+            pedido.albaran = f"/albaranes/{filename}"
+            
+        pedido.save()
 
         messages.success(request, 'La compra se ha procesado correctamente.')
 
@@ -384,3 +390,10 @@ def generar_pdf(template_src, context_dict={}, output_filename=None):
     else:
         return None
 
+
+@login_required
+def pedidos_cliente(request):
+    pedidos = Pedido.objects.filter(cliente=request.user)
+    context={'pedidos': pedidos,
+             'page': 'pedidos'}
+    return render(request, 'pedidos_cliente.html', context)
